@@ -22,19 +22,19 @@ components:
           properties:
             firstName:
               type: string
-              example: "John"
+              example: 'John'
             lastName:
               type: string
-              example: "Doe"
+              example: 'Doe'
             email:
               type: string
-              example: "john@mail.com"
+              example: 'john@mail.com'
             phone:
               type: string
-              example: "12345678"
+              example: '12345678'
         serviceAddress:
           type: string
-          example: "Avej 12, 1234 Aby, Denmark"
+          example: 'Avej 12, 1234 Aby, Denmark'
         vehicles:
           type: array
           items:
@@ -42,16 +42,16 @@ components:
             properties:
               licensePlate:
                 type: string
-                example: "AB12344"
+                example: 'AB12344'
               vinCode:
                 type: string
-                example: "VF1AGVYA049562718"
+                example: 'VF1AGVYA049562718'
               brand:
                 type: string
-                example: "Audi"
+                example: 'Audi'
               model:
                 type: string
-                example: "A1"
+                example: 'A1'
               tireSize:
                 type: object
                 properties:
@@ -75,10 +75,10 @@ components:
                     example: 0
               tireTypeOnVehicle:
                 type: string
-                example: "Winter"
+                example: 'Winter'
               comment:
                 type: string
-                example: "Should be done September ultimo"
+                example: 'Should be done September ultimo'
     CustomerAgreementResponse:
       type: object
       properties:
@@ -123,10 +123,10 @@ components:
           properties:
             subscriptionCompanyName:
               type: string
-              example: "Audi"
+              example: 'Audi'
             subscriptionName:
               type: string
-              example: "Audi Subscription"
+              example: 'Audi Subscription'
             vehicles:
               type: array
               items:
@@ -134,25 +134,25 @@ components:
                 properties:
                   licensePlate:
                     type: string
-                    example: "AB12345"
+                    example: 'AB12345'
                   vinCode:
                     type: string
-                    example: "VF1AGVYA049562718"
+                    example: 'VF1AGVYA049562718'
                   attributes:
                     type: object
                     properties:
                       tireTypeOnVehicle:
                         type: string
-                        example: "Summer"
+                        example: 'Summer'
             customerEmail:
               type: string
-              example: "john@mail.com"
+              example: 'john@mail.com'
             customerFirstName:
               type: string
-              example: "John"
+              example: 'John'
             customerLastName:
               type: string
-              example: "Doe"
+              example: 'Doe'
             vehiclesAmount:
               type: integer
               example: 1
@@ -172,10 +172,10 @@ components:
             properties:
               subscriptionCompanyName:
                 type: string
-                example: "Audi"
+                example: 'Audi'
               subscriptionName:
                 type: string
-                example: "Audi Subscription"
+                example: 'Audi Subscription'
               vehicles:
                 type: array
                 items:
@@ -183,25 +183,25 @@ components:
                   properties:
                     licensePlate:
                       type: string
-                      example: "AB12345"
+                      example: 'AB12345'
                     vinCode:
                       type: string
-                      example: "VF1AGVYA049562718"
+                      example: 'VF1AGVYA049562718'
                     attributes:
                       type: object
                       properties:
                         tireTypeOnVehicle:
                           type: string
-                          example: "Summer"
+                          example: 'Summer'
               customerEmail:
                 type: string
-                example: "john@mail.com"
+                example: 'john@mail.com'
               customerFirstName:
                 type: string
-                example: "John"
+                example: 'John'
               customerLastName:
                 type: string
-                example: "Doe"
+                example: 'Doe'
               vehiclesAmount:
                 type: integer
                 example: 2
@@ -210,7 +210,8 @@ security:
   - authToken: []
 
 paths:
-  /partners/customers:
+  /partners/customers/:
+  
     post:
       summary: Create Customer Agreement
       requestBody:
@@ -238,34 +239,7 @@ paths:
           description: Forbidden
       security:
         - authToken: []
-    
-    get:
-      summary: Get Customer Agreement
-      parameters:
-        - name: customerEmail
-          in: query
-          required: true
-          schema:
-            type: string
-            example: "john@mail.com"
-      responses:
-        '200':
-          description: Successfully retrieved customer details.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CustomerDetailsResponse'
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '401':
-          description: Authorization failed
-      security:
-        - authToken: []
-    
+  
     delete:
       summary: Remove Customer Agreement
       requestBody:
@@ -277,13 +251,13 @@ paths:
               properties:
                 customerEmail:
                   type: string
-                  example: "john@mail.com"
+                  example: 'john@mail.com'
                 licensePlate:
                   type: string
-                  example: "AB12344"
+                  example: 'AB12344'
                 vinCode:
                   type: string
-                  example: "VF1AGVYA049562718"
+                  example: 'VF1AGVYA049562718'
       responses:
         '200':
           description: Customer removed successfully
@@ -303,10 +277,9 @@ paths:
           description: Forbidden
       security:
         - authToken: []
-
-  /partners/customers/all:
+    
     get:
-      summary: Get Customers Agreements
+      summary: Get All Customers Agreements
       parameters:
         - name: pageSize
           in: query
@@ -335,5 +308,33 @@ paths:
           description: Authorization failed
         '403':
           description: Forbidden
+      security:
+        - authToken: []
+
+  /partners/customers/{customerEmail}:
+    get:
+      summary: Get Customer Agreement
+      parameters:
+        - name: customerEmail
+          in: query
+          required: true
+          schema:
+            type: string
+            example: 'john@mail.com'
+      responses:
+        '200':
+          description: Successfully retrieved customer details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDetailsResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Authorization failed
       security:
         - authToken: []
