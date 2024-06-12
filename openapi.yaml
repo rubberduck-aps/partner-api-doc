@@ -1,0 +1,339 @@
+﻿openapi: 3.0.0
+info:
+  title: Rubberduck - Partners API
+  version: '1.0'
+  description: cc.
+
+servers:
+  - url: https://app.rubberduck.dk/api/v1
+
+components:
+  securitySchemes:
+    authToken:
+      type: apiKey
+      in: header
+      name: auth
+  schemas:
+    CustomerAgreement:
+      type: object
+      properties:
+        customer:
+          type: object
+          properties:
+            firstName:
+              type: string
+              example: "John"
+            lastName:
+              type: string
+              example: "Doe"
+            email:
+              type: string
+              example: "john@mail.com"
+            phone:
+              type: string
+              example: "12345678"
+        serviceAddress:
+          type: string
+          example: "Avej 12, 1234 Aby, Denmark"
+        vehicles:
+          type: array
+          items:
+            type: object
+            properties:
+              licensePlate:
+                type: string
+                example: "AB12344"
+              vinCode:
+                type: string
+                example: "VF1AGVYA049562718"
+              brand:
+                type: string
+                example: "Audi"
+              model:
+                type: string
+                example: "A1"
+              tireSize:
+                type: object
+                properties:
+                  width:
+                    type: integer
+                    example: 0
+                  profile:
+                    type: integer
+                    example: 0
+                  diameter:
+                    type: integer
+                    example: 0
+                  backWidth:
+                    type: integer
+                    example: 0
+                  backProfile:
+                    type: integer
+                    example: 0
+                  backDiameter:
+                    type: integer
+                    example: 0
+              tireTypeOnVehicle:
+                type: string
+                example: "Winter"
+              comment:
+                type: string
+                example: "Should be done September ultimo"
+    CustomerAgreementResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 0
+        count:
+          type: integer
+          example: 1
+        data:
+          type: object
+          properties:
+            vehiclesAddedOrUpdated:
+              type: integer
+              example: 1
+            vehiclesNotAdded:
+              type: integer
+              example: 0
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 1260
+        count:
+          type: integer
+          example: 0
+        data:
+          type: string
+          example: null
+    CustomerDetailsResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 0
+        count:
+          type: integer
+          example: 1
+        data:
+          type: object
+          properties:
+            subscriptionCompanyName:
+              type: string
+              example: "Audi"
+            subscriptionName:
+              type: string
+              example: "Audi Subscription"
+            vehicles:
+              type: array
+              items:
+                type: object
+                properties:
+                  licensePlate:
+                    type: string
+                    example: "AB12345"
+                  vinCode:
+                    type: string
+                    example: "VF1AGVYA049562718"
+                  attributes:
+                    type: object
+                    properties:
+                      tireTypeOnVehicle:
+                        type: string
+                        example: "Summer"
+            customerEmail:
+              type: string
+              example: "john@mail.com"
+            customerFirstName:
+              type: string
+              example: "John"
+            customerLastName:
+              type: string
+              example: "Doe"
+            vehiclesAmount:
+              type: integer
+              example: 1
+    CustomersListResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 0
+        count:
+          type: integer
+          example: 5
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              subscriptionCompanyName:
+                type: string
+                example: "Audi"
+              subscriptionName:
+                type: string
+                example: "Audi Subscription"
+              vehicles:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    licensePlate:
+                      type: string
+                      example: "AB12345"
+                    vinCode:
+                      type: string
+                      example: "VF1AGVYA049562718"
+                    attributes:
+                      type: object
+                      properties:
+                        tireTypeOnVehicle:
+                          type: string
+                          example: "Summer"
+              customerEmail:
+                type: string
+                example: "john@mail.com"
+              customerFirstName:
+                type: string
+                example: "John"
+              customerLastName:
+                type: string
+                example: "Doe"
+              vehiclesAmount:
+                type: integer
+                example: 2
+
+security:
+  - authToken: []
+
+paths:
+  /partners/customers:
+    post:
+      summary: Create Customer Agreement
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerAgreement'
+      responses:
+        '200':
+          description: Customer updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerAgreementResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Authorization failed
+        '403':
+          description: Forbidden
+      security:
+        - authToken: []
+    
+    get:
+      summary: Get Customer Agreement
+      parameters:
+        - name: customerEmail
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "john@mail.com"
+      responses:
+        '200':
+          description: Successfully retrieved customer details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDetailsResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Authorization failed
+      security:
+        - authToken: []
+    
+    delete:
+      summary: Remove Customer Agreement
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                customerEmail:
+                  type: string
+                  example: "john@mail.com"
+                licensePlate:
+                  type: string
+                  example: "AB12344"
+                vinCode:
+                  type: string
+                  example: "VF1AGVYA049562718"
+      responses:
+        '200':
+          description: Customer removed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDetailsResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Authorization failed
+        '403':
+          description: Forbidden
+      security:
+        - authToken: []
+
+  /partners/customers/all:
+    get:
+      summary: Get Customers Agreements
+      parameters:
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            example: 5
+        - name: pageNumber
+          in: query
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Successfully retrieved list of customers.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomersListResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Authorization failed
+        '403':
+          description: Forbidden
+      security:
+        - authToken: []
